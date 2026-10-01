@@ -2,26 +2,23 @@ package assign05;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 /**
- * Pivot chooser that selects a uniformly random element of the range.
+ * Pivot chooseer, chooses a random element as the pivot in the given indexes.
  *
- * @param <E> the type of elements in the list
+ * @param <E> the type of elements in the list being sorted
+ * @author Thakshbir Singh Dhillon and Abhinav Mishra
+ * @version 09-29-2026
  */
-public class RandomPivotChooser<E extends Comparable<? super E>> implements PivotChooser<E> {
+public class RandomPivotChooser<E extends Comparable<? super E>> implements PivotChooser<E> 
+{
+	 private Random rng = new Random();//random object
 
-    private final Random rng = new Random();
+	@Override
+	public int getPivotIndex(ArrayList<E> list, int leftIndex, int rightIndex) 
+	{
+		//inclusive of both indexes
+		int random =  leftIndex + rng.nextInt(rightIndex - leftIndex + 1);
+		return random;
+	}
 
-    /**
-     * Returns the index of a random element in the range.
-     *
-     * @param list       the list being sorted
-     * @param leftIndex  the leftmost index of the range
-     * @param rightIndex the rightmost index of the range
-     * @return a random index in [leftIndex, rightIndex]
-     */
-    @Override
-    public int getPivotIndex(ArrayList<E> list, int leftIndex, int rightIndex) {
-        return leftIndex + rng.nextInt(rightIndex - leftIndex + 1);
-    }
 }

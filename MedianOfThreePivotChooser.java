@@ -1,38 +1,50 @@
 package assign05;
 
 import java.util.ArrayList;
-
 /**
- * Pivot chooser that selects the median of the first, middle, and last elements
- * of the range.
+ * Pivot chooseer, chooses the median of the three elements as the pivot
  *
- * @param <E> the type of elements in the list
+ * @param <E> the type of elements in the list being sorted
+ * @author Thakshbir Singh Dhillon and Abhinav Mishra
+ * @version 09-29-2026
  */
-public class MedianOfThreePivotChooser<E extends Comparable<? super E>> implements PivotChooser<E> {
-
-    /**
-     * Returns the index of the median of the first, middle, and last elements.
+public class MedianOfThreePivotChooser<E extends Comparable<? super E>> implements PivotChooser<E>
+{
+	/**
+     * Returns the index of the median from the first, middle, and last element
      *
-     * @param list       the list being sorted
-     * @param leftIndex  the leftmost index of the range
-     * @param rightIndex the rightmost index of the range
-     * @return the index of the median-of-three element
+     * @param list - the list being sorted
+     * @param leftIndex  - the leftmost index of the range
+     * @param rightIndex - the rightmost index of the range
+     * @return an int that is the index of the median of the three elements
      */
-    @Override
-    public int getPivotIndex(ArrayList<E> list, int leftIndex, int rightIndex) {
-        int mid = leftIndex + (rightIndex - leftIndex) / 2;
-        E a = list.get(leftIndex);
-        E b = list.get(mid);
-        E c = list.get(rightIndex);
+	@Override
+	public int getPivotIndex(ArrayList<E> list, int leftIndex, int rightIndex) 
+	{
+	    int midIndex = leftIndex + (rightIndex - leftIndex) / 2;
+	    E left = list.get(leftIndex);
+	    E mid = list.get(midIndex);
+	    E right = list.get(rightIndex);
 
-        if (a.compareTo(b) <= 0) {
-            if (b.compareTo(c) <= 0)
-                return mid;                                    // a <= b <= c
-            return (a.compareTo(c) <= 0) ? rightIndex : leftIndex; // b is largest
-        } else {
-            if (a.compareTo(c) <= 0)
-                return leftIndex;                              // b < a <= c
-            return (b.compareTo(c) <= 0) ? rightIndex : mid;   // a is largest
-        }
-    }
+	    if (left.compareTo(mid) <= 0 && mid.compareTo(right) <= 0) 
+	    {
+	        return midIndex;
+	    }
+
+	    if (right.compareTo(mid) <= 0 && mid.compareTo(left) <= 0) 
+	    {
+	        return midIndex;
+	    }
+
+	    if (mid.compareTo(left) <= 0 && left.compareTo(right) <= 0) {
+	        return leftIndex;
+	    }
+
+	    if (right.compareTo(left) <= 0 && left.compareTo(mid) <= 0) {
+	        return leftIndex;
+	    }
+
+	    return rightIndex;
+	}
+
 }

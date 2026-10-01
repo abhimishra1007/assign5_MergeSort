@@ -10,7 +10,8 @@ import java.util.ArrayList;
  * @author CS 2420 course staff
  * @version September 24, 2026
  */
-public interface PivotChooser<E extends Comparable<? super E>> {
+public interface PivotChooser<E extends Comparable<? super E>> 
+{
 	/**
 	 * Selects an element in the given ArrayList to serve as the quicksort pivot.
 	 * 

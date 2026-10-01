@@ -3,107 +3,94 @@ package assign05;
 import java.util.ArrayList;
 
 /**
- * Quicksort using a pluggable pivot-selection strategy. Never switches to
- * insertion sort.
+ * Quick sort that uses a pivot chooser to sort the list.
  *
  * @param <E> the type of elements in the list being sorted
+ * @author Thakshbir Singh Dhillon and Abhinav Mishra
+ * @version 09-29-2026
  */
-public class QuickSorter<E extends Comparable<? super E>> implements Sorter<E> {
+public class QuickSorter<E extends Comparable<? super E>> implements Sorter<E> 
+{
 
-    private final PivotChooser<E> chooser;
+    private PivotChooser<E> chooser;
 
     /**
-     * Creates a quick sorter that uses the given pivot-selection strategy.
+     * Constructor that uses the given pivot chooser.
      *
-     * @param chooser the strategy used to select a pivot element
+     * @param chooser - the strategy used to select a pivot element
      */
-    public QuickSorter(PivotChooser<E> chooser) {
+    public QuickSorter(PivotChooser<E> chooser) 
+    {
         this.chooser = chooser;
     }
 
     /**
-     * Driver method: sorts the list in ascending order.
+     * Sorts the list in ascending order.
      *
      * @param list the list to sort
      */
     @Override
-    public void sort(ArrayList<E> list) {
-        if (list == null || list.size() < 2)
+    public void sort(ArrayList<E> list) 
+    {
+    	//if the list is empty or has a single element
+        if (list == null || list.size() < 2) 
+        {
             return;
+        }
+        //recursive call
         quickSort(list, 0, list.size() - 1);
     }
 
     /**
-     * Recursive quicksort on list[left..right], inclusive.
+     * recursive method that sorts using quick sort
      *
-     * Recurses on the smaller partition and loops on the larger one, which keeps
-     * the call stack at O(log N) depth even when a bad pivot makes the running
-     * time quadratic. The algorithm and its comparisons are unchanged.
-     *
-     * @param list  the list being sorted
-     * @param left  the leftmost index of the range to sort
-     * @param right the rightmost index of the range to sort
+     * @param list -the list being sorted
+     * @param left -the leftmost index
+     * @param right- the rightmost index
      */
-    private void quickSort(ArrayList<E> list, int left, int right) {
-        while (left < right) {
-            int pivotIndex = chooser.getPivotIndex(list, left, right);
-            int p = partition(list, left, right, pivotIndex);
+    private void quickSort(ArrayList<E> list, int left, int right) 
+    {
+    	//base case
+        if (left >= right) 
+        {
+            return;
+        }
+        int pivotIndex = chooser.getPivotIndex(list, left, right);
+        int finalPivotIndex = seperate(list, left, right, pivotIndex);
+        quickSort(list, left, finalPivotIndex - 1);//left seperated array
+        quickSort(list, finalPivotIndex + 1, right);// right seperated array
+    }
 
-            if (p - left < right - p) {
-                quickSort(list, left, p - 1);
-                left = p + 1;
-            } else {
-                quickSort(list, p + 1, right);
-                right = p - 1;
+    /**
+     * seperates the list around the pivot and return the index of the pivot.
+     *
+     * @return n int that is the final index of the pivot
+     */
+    private int seperate(ArrayList<E> list, int left, int right, int pivotIndex) 
+    {
+        E pivot = list.get(pivotIndex);
+        swap(list, pivotIndex, right);//moving pivot to the end
+        int i = left;//index which is to be swapped
+        for (int j = left; j < right; j++) 
+        {
+            if (list.get(j).compareTo(pivot) < 0) 
+            {
+                swap(list, i, j);
+                i++;
             }
         }
+        swap(list, i, right);//moving pivot back
+        return i;//the index were the pivot was at the end.
     }
 
     /**
-     * Partitions list[left..right] around the element at pivotIndex. Afterward,
-     * everything left of the returned index is less than or equal to the pivot,
-     * and everything right of it is greater than or equal to the pivot.
-     *
-     * @param list       the list being sorted
-     * @param left       the leftmost index of the range
-     * @param right      the rightmost index of the range
-     * @param pivotIndex the index of the chosen pivot
-     * @return the final index of the pivot
+     * helper method that swaps two elements in the list.
      */
-    private int partition(ArrayList<E> list, int left, int right, int pivotIndex) {
-        E pivot = list.get(pivotIndex);
-        swap(list, pivotIndex, right); // move pivot out of the way
+    private void swap(ArrayList<E> list, int left, int right)
+    {
 
-        int i = left;
-        int j = right - 1;
-        while (true) {
-            // Stopping on elements equal to the pivot keeps partitions balanced
-            // when the list has many duplicates.
-            while (i < right && list.get(i).compareTo(pivot) < 0)
-                i++;
-            while (j > left && list.get(j).compareTo(pivot) > 0)
-                j--;
-            if (i >= j)
-                break;
-            swap(list, i, j);
-            i++;
-            j--;
-        }
-
-        swap(list, i, right); // put pivot in its final place
-        return i;
-    }
-
-    /**
-     * Swaps two elements of the list.
-     *
-     * @param list the list
-     * @param i    index of the first element
-     * @param j    index of the second element
-     */
-    private void swap(ArrayList<E> list, int i, int j) {
-        E temp = list.get(i);
-        list.set(i, list.get(j));
-        list.set(j, temp);
+        E temp = list.get(left);
+        list.set(left, list.get(right));
+        list.set(right, temp);
     }
 }
